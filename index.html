@@ -39,7 +39,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
-      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -83,6 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This is a light-weight library for easy access to the Raspberry Pi's integrated peripherals. It can be used from user mode as well as from kernel mode, and it works fine from a real-time context of one of the real-time Linux patches like Xenomai. It even works when doing bare-metal programming. Note that this library does not handle the on-board LAN chip of Model B RasPis. That one is accessed through USB.</p>
+<p>The latest version can be obtained via GitHub: <a href="https://github.com/offis/raspi-directhw">https://github.com/offis/raspi-directhw</a></p>
 <h2>File Structure</h2>
 <p><code><a class="el" href="hw_8h.html" title="Declarations for all publicly known (as of 08/2013) Raspberry Pi hardware registers.">raspi/hw.h</a></code> contains base register declarations, most importantly <a class="el" href="hw_8h.html#ad29615dec7637c14c5b2a1f235887ae1">HW</a>. Many registers are specified down to the individual register bit.</p>
 <p>It also contains helper functions for GPIO and system timer access. <code><a class="el" href="uart_8h.html" title="This file contains the whole API as static inline functions, since all functions are very short...">raspi/uart.h</a></code>, <code><a class="el" href="spi_8h.html" title="This file contains the whole API as static inline functions, since all functions are very short...">raspi/spi.h</a></code>, and <code><a class="el" href="spisl_8h.html" title="This file contains the whole API as static inline functions, since all functions are very short...">raspi/spisl.h</a></code> contain more hardware helpers.</p>
@@ -93,13 +93,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>See <a href="modules.html">Modules</a> for an API overview and <a class="el" href="gpio_test_8c-example.html">gpio_test.c</a> for a basic code example.</p>
 <h2>License</h2>
 <p>Copyright (c) 2013 OFFIS e.V.</p>
-<p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at </p>
-<pre class="fragment">http://www.apache.org/licenses/LICENSE-2.0
-</pre><p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </p>
+<p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at</p>
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 17 2014 13:19:43 for RasPi Direct Hardware Access by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jan 17 2014 13:43:08 for RasPi Direct Hardware Access by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.3.1
 </small></address>

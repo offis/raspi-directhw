@@ -1,7 +1,6 @@
 var searchData=
 [
   ['raspberry_20pi_20direct_20hardware_20access',['Raspberry Pi Direct Hardware Access',['../index.html',1,'']]],
-  ['raspberry_20pi_20direct_20hardware_20access',['Raspberry Pi Direct Hardware Access',['../md_README.html',1,'']]],
   ['raspi_5faux_5fregs',['raspi_AUX_regs',['../group__registers.html#structraspi__AUX__regs',1,'']]],
   ['raspi_5fbsc0_5fregs',['raspi_BSC0_regs',['../group__registers.html#structraspi__BSC0__regs',1,'']]],
   ['raspi_5fbsc1_5fregs',['raspi_BSC1_regs',['../group__registers.html#gae550916ced8d7e688ed13849ca6bfd6b',1,'hw.h']]],
