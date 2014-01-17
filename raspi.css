@@ -1,0 +1,9 @@
+#titlearea {
+    background: #c0d0dd;
+    padding: 1ex;
+}
+pre.fragment {
+    font-family: monospace;
+    line-height: 1em;
+    font-size: 80%;
+}
