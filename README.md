@@ -7,7 +7,7 @@ mode, and it works fine from a real-time context of one of the real-time
 Linux patches like Xenomai.  It even works when doing bare-metal programming.
 
 For more Information, generate documentation using "make doc", this needs
-doxygen.
+doxygen.  An on-line copy is available at http://offis.github.io/raspi-directhw/
 
 
 License

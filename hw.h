@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,8 @@
  * Linux patches like Xenomai.  It even works when doing bare-metal programming.
  * Note that this library does not handle the on-board LAN chip of Model B
  * RasPis.  That one is accessed through USB.
+ *
+ * The latest version can be obtained via GitHub: https://github.com/offis/raspi-directhw
  *
  *
  * File Structure
@@ -71,7 +73,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
