@@ -7,7 +7,7 @@
  * License
  * -------
  *
- * Copyright (c) 2013 OFFIS e.V.
+ * Copyright (c) 2013-2019 OFFIS e.V.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
  * spisl_synchronize() does so by expecting a continuous byte stream and
  * glitching the clock until the bytes read correctly.
  *
- * Declared in `raspi/spisl.h`.
+ * Declared in `spisl.h`.
  *
  * Wiring
  * ------
@@ -64,11 +64,10 @@
  * @{
  */
 
-#ifndef RASPI_SPISL_H
-#define RASPI_SPISL_H
+#ifndef RASPI_DIRECTHW_SPISL_H
+#define RASPI_DIRECTHW_SPISL_H
 
-#include "raspi/hw.h"
-#include <stdint.h>
+#include "hw.h"
 
 
 /// Configure PCM hardware to act as SPI slave.

@@ -7,7 +7,7 @@
  * License
  * -------
  *
- * Copyright (c) 2013 OFFIS e.V.
+ * Copyright (c) 2013-2019 OFFIS e.V.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,15 @@
  * controller without using the regular Linux device driver.  This is useful
  * when running under Xenomai or a similar real-time OS.
  *
- * Declared in `raspi/uart.h`.
+ * Declared in `uart.h`.
  *
  * @{
  */
 
-#ifndef RASPI_UART_H
-#define RASPI_UART_H
+#ifndef RASPI_DIRECTHW_UART_H
+#define RASPI_DIRECTHW_UART_H
 
-#include "raspi/hw.h"
-#include <stdint.h>
+#include "hw.h"
 
 /// Configure UART hardware for given bit rate.  115200 bit/s is the fastest
 /// speed available.

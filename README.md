@@ -13,7 +13,7 @@ doxygen.  An on-line copy is available at http://offis.github.io/raspi-directhw/
 License
 =======
 
-Copyright (c) 2013 OFFIS e.V.
+Copyright (c) 2013-2019 OFFIS e.V.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

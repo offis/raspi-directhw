@@ -7,7 +7,7 @@
  * License
  * -------
  *
- * Copyright (c) 2013 OFFIS e.V.
+ * Copyright (c) 2013-2019 OFFIS e.V.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,15 @@
  * when running under Xenomai or a similar real-time OS.  Note that you *must*
  * unload the SPI kernel module, or these functions will not work correctly.
  *
- * Declared in `raspi/spi.h`.
+ * Declared in `spi.h`.
  *
  * @{
  */
 
-#ifndef RASPI_SPI_H
-#define RASPI_SPI_H
+#ifndef RASPI_DIRECTHW_SPI_H
+#define RASPI_DIRECTHW_SPI_H
 
-#include "raspi/hw.h"
-#include <stdint.h>
+#include "hw.h"
 
 /// Size of both, the read and the write FIFO.
 #define raspi_SPI_FIFOSIZE 16
@@ -52,6 +51,7 @@ static inline void spi_init(uint32_t speed)
 	if (div >= 65536) div = 0;
 	if (div < 2) div = 2;
 	HW.SPI0.CLK.B.CDIV = div;
+	HW.SPI0.CS.B.CPOL = 0;
 	HW.SPI0.CS.B.CPHA = 1;
 
 	memory_barrier();

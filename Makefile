@@ -1,4 +1,4 @@
-# Copyright (c) 2013 OFFIS e.V.
+# Copyright (c) 2013-2019 OFFIS e.V.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ clean:
 	-rm -r doc
 
 install: doc
-	mkdir -p $(PREFIX)/include/raspi $(PREFIX)/share/doc
-	cp *.h *.c $(PREFIX)/include/raspi/
+	mkdir -p $(PREFIX)/include/raspi-directhw $(PREFIX)/share/doc
+	cp *.h *.c $(PREFIX)/include/raspi-directhw/
 	cp -r doc $(PREFIX)/share/doc/raspi-directhw
 
 .PHONY: doc clean install

@@ -7,7 +7,7 @@
  * License
  * -------
  *
- * Copyright (c) 2013 OFFIS e.V.
+ * Copyright (c) 2013-2019 OFFIS e.V.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,24 +31,27 @@
  * Note that this library does not handle the on-board LAN chip of Model B
  * RasPis.  That one is accessed through USB.
  *
+ * This version has preliminary support for Pi 2 and 3, and might even work for
+ * future boards. Any peripherals that differ from the original Pi will not
+ * work, however. System Timer, GPIO, SPI, I2C and UART should be fine.
+ *
  * The latest version can be obtained via GitHub: https://github.com/offis/raspi-directhw
  *
  *
  * File Structure
  * --------------
  *
- * `raspi/hw.h` contains base register declarations, most importantly @ref HW.
+ * `hw.h` contains base register declarations, most importantly @ref HW.
  * Many registers are specified down to the individual register bit.
  *
  * It also contains helper functions for GPIO and system timer access.
- * `raspi/uart.h`, `raspi/spi.h`, and `raspi/spisl.h` contain more hardware
- * helpers.
+ * `uart.h`, `spi.h`, and `spisl.h` contain more hardware helpers.
  *
  *
  * Usage
  * -----
  *
- * In order to use this API, you need to include `raspi/hw.c` in (exactly) one
+ * In order to use this API, you need to include `hw.c` in (exactly) one
  * of your source files.  There are no C files to compile, and thus no libraries
  * to link.  Everything is small enough to use inline static declarations
  * efficiently.
@@ -67,7 +70,7 @@
  * License
  * -------
  *
- * Copyright (c) 2013 OFFIS e.V.
+ * Copyright (c) 2013-2019 OFFIS e.V.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,8 +86,8 @@
  *
  */
 
-#ifndef RASPI_HW_H
-#define RASPI_HW_H
+#ifndef RASPI_DIRECTHW_HW_H
+#define RASPI_DIRECTHW_HW_H
 
 #include <stdint.h>
 
@@ -99,7 +102,7 @@
  * as it is an array. Similarly, the clock manager registers @ref raspi_CM_regs
  * is an array indexed by constants of enum @ref raspi_CM_reg_t.
  *
- * Declared in `raspi/hw.h`.
+ * Declared in `hw.h`.
  * @{
  */
 
@@ -1344,6 +1347,8 @@ typedef volatile struct {
 } raspi_peripherals;
 
 
+#if defined(linux) && !defined(__KERNEL__)
+
 /// Hardware registers base pointer. See @ref HW.
 extern raspi_peripherals *pHW;
 
@@ -1360,10 +1365,28 @@ extern raspi_peripherals *pHW;
  */
 #define HW (*pHW)
 
-
 /// Map the hardware registers into the current user-space process.  Return true
 /// if successful, false on error.
 extern int raspi_map_hw(void);
+
+#else
+
+/* Bare-metal usage.  This needs compile-time deifnition of either
+ * RASPI_DIRECTHW_PI1_ONLY or RASPI_DIRECTHW_PI23_ONLY
+ */
+
+#if defined(RASPI_DIRECTHW_PI1_ONLY)
+/// Map peripheral register offset to physical address space as seen by the CPU.
+#define ARM(x) ((x)+0x20000000ul)
+#elif defined(RASPI_DIRECTHW_PI23_ONLY)
+#define ARM(x) ((x)+0x3f000000ul)
+#else
+#error "You need to select a Raspberry Pi model for bare-metal usage: define either RASPI_DIRECTHW_PI1_ONLY or RASPI_DIRECTHW_PI23_ONLY"
+#endif
+
+#define HW (*(raspi_peripherals *)ARM(0))
+
+#endif
 
 /// Clock frequency in Hz of the APB (Advanced Peripheral Bus).
 #define CORE_CLOCK 250000000
@@ -1385,22 +1408,16 @@ extern int raspi_map_hw(void);
 #define synchronization_barrier() /**/
 #endif
 
-
-/// Map peripheral register offset to physical address space as seen by the ARM
-/// CPU.
-#define ARM(x) ((x)+0x20000000ul)
-
 /// Map peripheral register offset to bus addresses as seen by the DMA
 /// controller and other peripherals.
 #define BUS(x) ((x)+0x7e000000ul)
-
 
 /**
  * @defgroup gpio General-Purpose I/O (GPIO)
  *
  * Helper functions for configuring and accessing GPIO pins.
  *
- * Declared in `raspi/hw.h`.
+ * Declared in `hw.h`.
  * @{
  */
 
@@ -1451,7 +1468,7 @@ static inline uint32_t gpio_read(int gpio)
  * @defgroup systimer System Timer
  * Utility functions for measuring time and busy-waiting short amounts of time.
  *
- * Declared in `raspi/hw.h`.
+ * Declared in `hw.h`.
  * @{
  */
 

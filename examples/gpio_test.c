@@ -31,8 +31,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include "raspi/hw.h"
-#include "raspi/hw.c"
+#include "../hw.h"
+#include "../hw.c"
 
 #ifdef __XENO__
 #include <sys/mman.h>
