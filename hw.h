@@ -1539,6 +1539,9 @@ extern int raspi_map_hw(void);
 #define ARM(x) ((x)+0x20000000ul)
 #elif defined(RASPI_DIRECTHW_PI23_ONLY)
 #define ARM(x) ((x)+0x3f000000ul)
+#elif defined(RASPI_DIRECTHW_PI4_ONLY
+#define ARM(x) ((x)+0xFE000000ul)
+#warning "I/O base address for Raspberry PI 4 has not been tested."
 #else
 #error "You need to select a Raspberry Pi model for bare-metal usage: define either RASPI_DIRECTHW_PI1_ONLY or RASPI_DIRECTHW_PI23_ONLY"
 #endif
