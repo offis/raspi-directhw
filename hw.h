@@ -1596,12 +1596,27 @@ typedef enum {
 	Alt5 = 2
 } raspi_GPIO_function;
 
+/// Select between GPIO pull-up or down
+typedef enum {
+	PullOff = 0,
+	PullDown = 1,
+	PullUp = 2
+} raspi_GPIO_pull;
+
 
 /// Configure GPIO _gpio_ for function _function_.
-static inline void gpio_configure(int gpio, raspi_GPIO_function function)
+static inline void gpio_configure(int gpio, raspi_GPIO_function function, raspi_GPIO_pull pull)
 {
+	static volatile int wait;
 	uint32_t tmp = HW.GPIO.FSEL[gpio/10] & ~(7 << ((gpio%10)*3));
 	HW.GPIO.FSEL[gpio/10] = tmp | (function&7) << ((gpio%10)*3);
+	HW.GPIO.PUD = pull;
+	wait = 150;
+	while (wait--);
+	HW.GPIO.PUDCLK[gpio/32] = 1<<(gpio%32);
+	wait = 150;
+	while (wait--);
+	HW.GPIO.PUDCLK[gpio/32] = 0;
 }
 
 
