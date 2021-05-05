@@ -113,8 +113,23 @@
  * No external signals.
  */
 typedef struct {
-	uint32_t IRQ;
-	uint32_t ENABLES;
+	/// Interrupt status
+	union {
+		uint32_t U;
+		struct raspi_AUX_PERIPHERALS_reg {
+			/// 1: active; 0: inactive
+			uint32_t MINI_UART:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI1:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI2:1;
+		} B;
+	} IRQ;
+	/// Peripheral activation control
+	union {
+		uint32_t U;
+		struct raspi_AUX_PERIPHERALS_reg B;
+	} ENB;
 } raspi_AUX_regs;
 /// AUX register offset
 #define AUX_OFFSET 0x215000
@@ -123,8 +138,17 @@ typedef struct {
  * Auxillary mini UART (= UART1). Register names have `AUX_MU_` prefix and
  * `_REG` suffix stripped.
  *
- * Effectively unusable due to overlap with UART0, which has no usable
- * alternate mapping.
+ * On Pi 1/2, this is effectively unusable due to overlap with UART0, which has
+ * no usable alternate mapping. It may still be of use because unlike the
+ * full-featured UART0, it is register-compatible with (a subset of) the
+ * venerable 16550.
+ *
+ * On the Pi 3/4, one UART is mapped to the bluetooth interface, so having both
+ * UARTs makes sense now.
+ *
+ * Note that it needs to be enabled in AUX.ENB.B.MINI_UART, otherwise these
+ * registers are not accessible at all. There are additional requirements, see
+ * https://www.raspberrypi.org/documentation/configuration/uart.md
  *
  *   Signal | Mapping 1           | Mapping 2          | Mapping 3
  *  --------|---------------------|--------------------|-------------------
@@ -134,16 +158,151 @@ typedef struct {
  *   RTS    | GPIO17 Alt5 (P1-11) | GPIO31 Alt5 (P5-6) | GPIO42 Alt5 (nc)
  */
 typedef struct {
-	uint32_t IO;
-	uint32_t IER;
-	uint32_t IIR;
-	uint32_t LCR;
-	uint32_t MCR;
-	uint32_t LSR;
-	uint32_t MSR;
+	/// Receiver/Transmitter Holding Register
+	union {
+		/// if DLAB==1, bits 0:7 are baud rate LSB
+		uint32_t U;
+		struct raspi_UART1_IO_reg {
+			// FIFO read/write
+			uint32_t DATA:8;
+			uint32_t reserved:24;
+		} B;
+	} IO;
+	/// Interrupt Enable Register
+	union {
+		/// if DLAB==1, bits 0:7 are baud rate MSB
+		uint32_t U;
+		struct raspi_UART1_IER_reg {
+			/// enable transmit interrupt
+			uint32_t TX_IRQ_ENABLE:1;
+			/// enable receive interrupt
+			uint32_t RX_IRQ_ENABLE:1;
+			uint32_t reserved:30;
+		} B;
+	} IER;
+	/// Interrupt Status/FIFO Control register
+	union {
+		uint32_t U;
+		struct raspi_UART1_IIR_reg {
+			/// Clear whenever an interrupt is pending.
+			uint32_t IRQ_PENDING:1;
+			/// read: send IRQ active; write: clear receive FIFO
+			uint32_t TXRDY_RXCLR:1;
+			/// read: receive IRQ active; write: clear send FIFO
+			uint32_t RXRDY_TXCLR:1;
+			uint32_t reserved:29;
+		} B;
+	} IIR;
+	/// Line Control register
+	union {
+		uint32_t U;
+		struct raspi_UART1_LCR_reg {
+			/// data size; 10: 7-bit, 11: 8-bit; other values not supported
+			uint32_t DATA_SIZE:2;
+			uint32_t reserved1:4;
+			/// if set, TX line will be held low (to indicate a break condition)
+			uint32_t BREAK:1;
+			/// if set, access to baud rate registers in IO and IER is enabled;
+			/// don't use this, use the non-16550-compatible BAUD register
+			/// instead
+			uint32_t DLAB:1;
+			uint32_t reserved2:24;
+		} B;
+	} LCR;
+	/// Modem Control Register
+	union {
+		uint32_t U;
+		struct raspi_UART1_MCR_reg {
+			uint32_t reserved1:1;
+			/// RTS control; 1: RTS low, 0: RTS high (only if auto-RTS is off)
+			uint32_t RTS:1;
+			uint32_t reserved2:30;
+		} B;
+	} MCR;
+	/// Line Status Register
+	union {
+		uint32_t U;
+		struct raspi_UART1_LSR_reg {
+			/// receive FIFO holds at least 1 byte
+			uint32_t RX_READY:1;
+			/// receive FIFO was full when a new character arrived
+			uint32_t RX_OVERRUN:1;
+			uint32_t reserved1:3;
+			/// transmit FIFO can accept at least 1 byte
+			uint32_t TX_READY:1;
+			/// transmit FIFO is completely empty and last bit has been sent
+			uint32_t TX_IDLE:1;
+			uint32_t reserved2:25;
+		} B;
+	} LSR;
+	// Modem Status Register
+	union {
+		uint32_t U;
+		struct raspi_UART1_MSR_reg {
+			uint32_t reserved1:4;
+			/// CTS status; 1: CTS is low, 0: CTS is high
+			uint32_t CTS:1;
+			uint32_t reserved2:27;
+		} B;
+	} MSR;
+	/// Scratch Pad Register -- no functionality, just one byte of memory
 	uint32_t SCRATCH;
-	uint32_t CNTL;
-	uint32_t STAT;
+	/// non-16550 control bits
+	union {
+		uint32_t U;
+		struct raspi_UART1_CNTL_reg {
+			/// Enable receiver
+			uint32_t RX_ENABLE:1;
+			/// Enable Transmitter
+			uint32_t TX_ENABLE:1;
+			/// Enable automatic RTS handling
+			uint32_t AUTO_RTS:1;
+			/// Enable automatic CTS handling
+			uint32_t AUTO_CTS:1;
+			/// Automatic RTS FIFO fill level: 0: 3 bytes left, 1: 2 bytes left,
+			/// 2: 1 byte left, 3: 4 bytes left
+			uint32_t AUTO_RTS_LEVEL:2;
+			/// RTS polarity; 1: assert is low, 0: assert is high
+			uint32_t AUTO_RTS_POL:1;
+			/// CTS polarity; 1: assert is low, 0: assert is high
+			uint32_t AUTO_CTS_POL:1;
+			uint32_t reserved:24;
+		} B;
+	} CNTL;
+	/// non-16550 status bits
+	union {
+		uint32_t U;
+		struct raspi_UART1_STAT_reg {
+			/// receive FIFO has at least 1 byte received
+			uint32_t RX_READY:1;
+			/// transmit FIFO has at least 1 byte free
+			uint32_t TX_READY:1;
+			/// receiver is currently idle
+			uint32_t RX_IDLE:1;
+			/// transmitter is currently idle
+			uint32_t TX_IDLE:1;
+			/// receiver has received a new character while receive FIFO was full
+			uint32_t RX_OVERRUN:1;
+			/// transmit FIFO is full (inverse of TX_READY)
+			uint32_t TX_FULL:1;
+			/// read-only status of RTS line
+			uint32_t RTS:1;
+			/// read-only status if CTS line
+			uint32_t CTS:1;
+			/// transmit FIFO is completely empty
+			uint32_t TX_EMPTY:1;
+			/// transmit FIFO is empty AND transmitter has finished sending
+			uint32_t TX_DONE:1;
+			uint32_t reserved1:6;
+			/// Fill level of receive FIFO
+			uint32_t RX_LEVEL:4;
+			uint32_t reserved2:4;
+			/// Fill level of transmit FIFO
+			uint32_t TX_LEVEL:4;
+			uint32_t reserved3:4;
+		} B;
+	} STAT;
+	/// non-16550 baud rate configuration, identical to DLAB==1 MSB/LSB baud rate
 	uint32_t BAUD;
 } raspi_UART1_regs;
 /// UART1 register offset
