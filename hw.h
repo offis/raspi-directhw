@@ -1405,6 +1405,52 @@ typedef enum {
 /// PM register offset
 #define PM_OFFSET 0x100000
 
+/**
+ * VideoCore firmware mailbox interface
+ *
+ * Not officially documented, but see http://magicsmoke.co.za/?p=284 and
+ * https://github.com/raspberrypi/firmware/wiki/Accessing-mailboxes for example.
+ *
+ */
+typedef struct {
+	uint32_t DATA;
+	uint32_t reserved[3];
+	uint32_t PEEK;
+	uint32_t SENDER:2;
+	uint32_t reserved1:30;
+	uint32_t reserved2:30;
+	uint32_t STATUS_EMPTY:1;
+	uint32_t STATUS_FULL:1;
+	uint32_t CONFIG;
+} raspi_MBOX0_regs;
+typedef raspi_MBOX0_regs raspi_MBOX1_regs;
+/// Mailbox channel number
+typedef enum {
+	/// Power management
+	MBOX_CH_POWER = 0,
+	/// Legacy framebuffer configuration (deprecated)
+	MBOX_CH_FB = 1,
+	/// Virtual UART
+	MBOX_CH_VUART = 2,
+	/// VideoCore Host Interface Queue
+	MBOX_CH_VCHIQ = 3,
+	/// LED controls
+	MBOX_CH_LED = 4,
+	/// Button controls
+	MBOX_CH_BUTTON = 5,
+	/// Touchscreen
+	MBOX_CH_TOUCH = 6,
+	/// ???
+	MBOX_CH_COUNT = 7,
+	/// Property requests to VideoCore (from ARM)
+	MBOX_CH_PROPVC = 8,
+	/// Property requests to ARM CPU (from VC)
+	MBOX_CH_PROPARM = 9
+} raspi_MBOX_CHANNEL_t;
+/// Mailbox offset
+#define MBOX0_OFFSET 0x00b880
+#define MBOX1_OFFSET 0x00b8a0
+
 
 /// @}
 
@@ -1413,11 +1459,12 @@ typedef enum {
 #define HW_END_OFFSET 0xf00000
 
 /**
- * Contains all perpherals declared in this file. See @ref HW for suggested
+ * Contains all peripherals declared in this file. See @ref HW for suggested
  * usage.
  *
  * Documentation taken from the official data sheet and
  * https://github.com/hermanhermitage/videocoreiv/wiki/Register-Documentation
+ * and http://magicsmoke.co.za/?p=284
  */
 typedef volatile struct {
 	/// \cond
@@ -1438,7 +1485,10 @@ typedef volatile struct {
 	reg(IRQ);               // 0x00b200
 	pad(IRQ, TIMER);
 	reg(TIMER);             // 0x00b400
-	pad(TIMER, PM);
+	pad(TIMER, MBOX0);
+	reg(MBOX0);              // 0x00b880 VideoCore MBOX interface (read)
+	reg(MBOX1);              // 0x00b8a0 VideoCore MBOX interface (write)
+	pad(MBOX1, PM);
 	reg(PM);                // 0x100000
 	pad(PM, CM);
 	reg(CM);                // 0x101000 (includes GPCLK at 0x101070)
