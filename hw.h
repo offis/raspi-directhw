@@ -113,17 +113,18 @@
  * No external signals.
  */
 typedef struct {
+	struct raspi_AUX_PERIPHERALS_reg {
+		/// 1: active; 0: inactive
+		uint32_t MINI_UART:1;
+		/// 1: active; 0: inactive
+		uint32_t SPI1:1;
+		/// 1: active; 0: inactive
+		uint32_t SPI2:1;
+	};
 	/// Interrupt status
 	union {
 		uint32_t U;
-		struct raspi_AUX_PERIPHERALS_reg {
-			/// 1: active; 0: inactive
-			uint32_t MINI_UART:1;
-			/// 1: active; 0: inactive
-			uint32_t SPI1:1;
-			/// 1: active; 0: inactive
-			uint32_t SPI2:1;
-		} B;
+		struct raspi_AUX_PERIPHERALS_reg B;
 	} IRQ;
 	/// Peripheral activation control
 	union {
