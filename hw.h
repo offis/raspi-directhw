@@ -106,6 +106,7 @@
  * @{
  */
 
+
 /**
  * Auxillary peripherals generic configuration. Register names have AUX_ prefix
  * stripped.
@@ -113,23 +114,29 @@
  * No external signals.
  */
 typedef struct {
-	struct raspi_AUX_PERIPHERALS_reg {
-		/// 1: active; 0: inactive
-		uint32_t MINI_UART:1;
-		/// 1: active; 0: inactive
-		uint32_t SPI1:1;
-		/// 1: active; 0: inactive
-		uint32_t SPI2:1;
-	};
 	/// Interrupt status
 	union {
 		uint32_t U;
-		struct raspi_AUX_PERIPHERALS_reg B;
+		struct {
+			/// 1: active; 0: inactive
+			uint32_t MINI_UART:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI1:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI2:1;
+		} B;
 	} IRQ;
 	/// Peripheral activation control
 	union {
 		uint32_t U;
-		struct raspi_AUX_PERIPHERALS_reg B;
+		struct {
+			/// 1: active; 0: inactive
+			uint32_t MINI_UART:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI1:1;
+			/// 1: active; 0: inactive
+			uint32_t SPI2:1;
+		} B;
 	} ENB;
 } raspi_AUX_regs;
 /// AUX register offset
